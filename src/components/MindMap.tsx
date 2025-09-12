@@ -94,8 +94,8 @@ const MindMap: React.FC = () => {
     const node = nodes.find(n => n.id === nodeId);
     if (node) {
       setConnectionLine({
-        from: { x: node.position.x + 120, y: node.position.y - 6 },
-        to: { x: node.position.x + 120, y: node.position.y - 6 }
+        from: { x: node.position.x + 114, y: node.position.y },
+        to: { x: node.position.x + 114, y: node.position.y }
       });
     }
   };
@@ -223,15 +223,24 @@ const MindMap: React.FC = () => {
 
   const handleConnectionClick = (fromId: string, toId: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    const rect = (event.target as SVGElement).getBoundingClientRect();
-    setSelectedConnection({
-      from: fromId,
-      to: toId,
-      position: {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top
-      }
-    });
+    
+    // Calcular el punto medio de la línea para posicionar el botón X
+    const fromNode = nodes.find(n => n.id === fromId);
+    const toNode = nodes.find(n => n.id === toId);
+    
+    if (fromNode && toNode) {
+      const midX = (fromNode.position.x + toNode.position.x) / 2 + 114;
+      const midY = (fromNode.position.y + toNode.position.y) / 2;
+      
+      setSelectedConnection({
+        from: fromId,
+        to: toId,
+        position: {
+          x: midX,
+          y: midY
+        }
+      });
+    }
   };
 
   const renderConnections = () => {
@@ -251,10 +260,10 @@ const MindMap: React.FC = () => {
               <g key={`${node.id}-${connectionId}`}>
                 {/* Línea invisible más gruesa para facilitar el click */}
                 <line
-                  x1={node.position.x + 120} // Posición del conector (esquina superior derecha)
-                  y1={node.position.y - 6}
-                  x2={connectedNode.position.x + 120}
-                  y2={connectedNode.position.y - 6}
+                  x1={node.position.x + 114} // Posición exacta del centro del conector
+                  y1={node.position.y}
+                  x2={connectedNode.position.x + 114}
+                  y2={connectedNode.position.y}
                   stroke="transparent"
                   strokeWidth="12"
                   cursor="pointer"
@@ -262,13 +271,13 @@ const MindMap: React.FC = () => {
                 />
                 {/* Línea visible */}
                 <line
-                  x1={node.position.x + 120} // Posición del conector (esquina superior derecha)
-                  y1={node.position.y - 6}
-                  x2={connectedNode.position.x + 120}
-                  y2={connectedNode.position.y - 6}
-                  stroke={isSelected ? "#EF4444" : "#666"}
+                  x1={node.position.x + 114} // Posición exacta del centro del conector
+                  y1={node.position.y}
+                  x2={connectedNode.position.x + 114}
+                  y2={connectedNode.position.y}
+                  stroke={isSelected ? "#EF4444" : "#3B82F6"}
                   strokeWidth={isSelected ? "3" : "2"}
-                  opacity={isSelected ? "1" : "0.6"}
+                  opacity={isSelected ? "1" : "0.8"}
                   strokeDasharray="5,5"
                   className="connection-line"
                 />
