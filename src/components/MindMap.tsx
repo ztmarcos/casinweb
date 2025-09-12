@@ -223,14 +223,15 @@ const MindMap: React.FC = () => {
 
   const handleConnectionClick = (fromId: string, toId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    console.log('Click en línea detectado!', fromId, toId); // Debug temporal
     
     // Calcular el punto medio de la línea para posicionar el botón X
     const fromNode = nodes.find(n => n.id === fromId);
     const toNode = nodes.find(n => n.id === toId);
     
     if (fromNode && toNode) {
-      const midX = (fromNode.position.x + toNode.position.x) / 2 + 114;
-      const midY = (fromNode.position.y + toNode.position.y) / 2;
+      const midX = (fromNode.position.x + toNode.position.x) / 2 + 60;
+      const midY = (fromNode.position.y + toNode.position.y) / 2 + 20;
       
       setSelectedConnection({
         from: fromId,
@@ -302,7 +303,7 @@ const MindMap: React.FC = () => {
                 <path
                   d={pathData}
                   stroke="transparent"
-                  strokeWidth="20"
+                  strokeWidth="25"
                   fill="none"
                   cursor="pointer"
                   onClick={(e) => handleConnectionClick(node.id, connectionId, e)}
@@ -317,11 +318,11 @@ const MindMap: React.FC = () => {
                   fill="none"
                   className="connection-line"
                 />
-                {/* Línea de hover para mejor feedback */}
+                {/* Línea de hover blanca */}
                 <path
                   d={pathData}
-                  stroke="rgba(59, 130, 246, 0.3)"
-                  strokeWidth="6"
+                  stroke="white"
+                  strokeWidth="3"
                   fill="none"
                   className="connection-hover"
                   style={{ opacity: 0 }}
