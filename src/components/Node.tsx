@@ -33,6 +33,8 @@ const Node: React.FC<NodeProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = useState(false);
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const nodeRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -56,6 +58,8 @@ const Node: React.FC<NodeProps> = ({
         x: e.clientX - position.x,
         y: e.clientY - position.y
       });
+      setStartPosition({ x: e.clientX, y: e.clientY });
+      setHasMoved(false);
       setIsDragging(true);
       onDragStart(id, position);
     }
@@ -65,6 +69,16 @@ const Node: React.FC<NodeProps> = ({
   React.useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent) => {
       if (isDragging) {
+        // Detectar si ha habido movimiento significativo
+        const distance = Math.sqrt(
+          Math.pow(e.clientX - startPosition.x, 2) + 
+          Math.pow(e.clientY - startPosition.y, 2)
+        );
+        
+        if (distance > 5) { // Umbral de 5 píxeles
+          setHasMoved(true);
+        }
+        
         const newPosition = {
           x: e.clientX - dragOffset.x,
           y: e.clientY - dragOffset.y
@@ -103,11 +117,11 @@ const Node: React.FC<NodeProps> = ({
       document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('mouseup', handleGlobalMouseUp);
     };
-  }, [isDragging, isConnecting, dragOffset, position, id, onPositionChange, onDragEnd, onConnectionEnd]);
+  }, [isDragging, isConnecting, dragOffset, position, id, onPositionChange, onDragEnd, onConnectionEnd, startPosition]);
 
   const handleClick = (e: React.MouseEvent) => {
-    // Solo trigger onClick si no estaba arrastrando
-    if (!isDragging && !isConnecting && e.button === 0) {
+    // Solo trigger onClick si no estaba arrastrando y no hubo movimiento
+    if (!isDragging && !isConnecting && !hasMoved && e.button === 0) {
       onClick(id);
     }
   };
@@ -133,7 +147,7 @@ const Node: React.FC<NodeProps> = ({
     >
       <span className="node-title">{title}</span>
       <div className="node-connection-hint">
-        Click derecho para conectar
+        Click derecho + arrastrar para conectar
       </div>
     </div>
   );
