@@ -148,6 +148,7 @@
   z-index: 50;
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 250px;
 }
 
 .instruction-item {
@@ -230,13 +231,45 @@
   }
 }
 
-.connection-line {
+.connection-group {
   transition: all 0.2s ease;
 }
 
-.connection-line:hover {
+.connection-group:hover .connection-line {
   stroke-width: 3;
-  opacity: 0.8;
+  opacity: 1;
+}
+
+.connection-group:hover .connection-hover {
+  opacity: 1 !important;
+  animation: connectionPulse 1.5s ease-in-out infinite;
+}
+
+.connection-group:hover::after {
+  content: "🗑️ Click para eliminar";
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.connection-hitbox {
+  transition: all 0.2s ease;
+}
+
+.connection-line {
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.connection-hover {
+  transition: opacity 0.2s ease;
+  pointer-events: none;
 }
 
 /* Responsive adjustments */

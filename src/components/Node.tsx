@@ -76,7 +76,7 @@ const Node: React.FC<NodeProps> = ({
           Math.pow(e.clientY - startPosition.y, 2)
         );
         
-        if (distance > 5) { // Umbral de 5 píxeles
+        if (distance > 8) { // Umbral de 8 píxeles para ser más preciso
           setHasMoved(true);
         }
         
@@ -121,9 +121,14 @@ const Node: React.FC<NodeProps> = ({
   }, [isDragging, isConnecting, dragOffset, position, id, onPositionChange, onDragEnd, onConnectionEnd, startPosition]);
 
   const handleClick = (e: React.MouseEvent) => {
-    // Solo trigger onClick si no estaba arrastrando y no hubo movimiento
-    if (!isDragging && !isConnecting && !hasMoved && e.button === 0) {
-      onClick(id);
+    // Solo trigger onClick si no estaba arrastrando, no conectando y no hubo movimiento
+    if (!isDragging && !isConnecting && !hasMoved && e.button === 0 && !e.altKey) {
+      // Pequeño delay para asegurar que no es parte de una secuencia de drag
+      setTimeout(() => {
+        if (!hasMoved && !isDragging && !isConnecting) {
+          onClick(id);
+        }
+      }, 50);
     }
   };
 

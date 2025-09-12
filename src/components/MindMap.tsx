@@ -297,24 +297,34 @@ const MindMap: React.FC = () => {
                              ${connectionPoints.to.x} ${connectionPoints.to.y}`;
             
             connections.push(
-              <g key={`${node.id}-${connectionId}`}>
+              <g key={`${node.id}-${connectionId}`} className="connection-group">
                 {/* Línea invisible más gruesa para facilitar el click */}
                 <path
                   d={pathData}
                   stroke="transparent"
-                  strokeWidth="15"
+                  strokeWidth="20"
                   fill="none"
                   cursor="pointer"
                   onClick={(e) => handleConnectionClick(node.id, connectionId, e)}
+                  className="connection-hitbox"
                 />
                 {/* Línea visible curva */}
                 <path
                   d={pathData}
                   stroke={isSelected ? "#EF4444" : "#64748B"}
-                  strokeWidth={isSelected ? "3" : "2"}
+                  strokeWidth={isSelected ? "4" : "2"}
                   opacity={isSelected ? "1" : "0.7"}
                   fill="none"
                   className="connection-line"
+                />
+                {/* Línea de hover para mejor feedback */}
+                <path
+                  d={pathData}
+                  stroke="rgba(59, 130, 246, 0.3)"
+                  strokeWidth="6"
+                  fill="none"
+                  className="connection-hover"
+                  style={{ opacity: 0 }}
                 />
               </g>
             );
