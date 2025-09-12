@@ -22,6 +22,11 @@ const MindMap: React.FC = () => {
     from: { x: number; y: number };
     to: { x: number; y: number };
   } | null>(null);
+  const [selectedConnection, setSelectedConnection] = useState<{
+    from: string;
+    to: string;
+    position: { x: number; y: number };
+  } | null>(null);
 
   // Estado inicial de los nodos
   const [nodes, setNodes] = useState<NodeData[]>([
@@ -85,10 +90,14 @@ const MindMap: React.FC = () => {
   const handleConnectionStart = (nodeId: string, startPos: { x: number; y: number }) => {
     setIsConnecting(true);
     setConnectingFrom(nodeId);
-    setConnectionLine({
-      from: startPos,
-      to: startPos
-    });
+    // Usar la posición del conector en lugar del centro del nodo
+    const node = nodes.find(n => n.id === nodeId);
+    if (node) {
+      setConnectionLine({
+        from: { x: node.position.x + 120, y: node.position.y - 6 },
+        to: { x: node.position.x + 120, y: node.position.y - 6 }
+      });
+    }
   };
 
   const handleConnectionDrag = (currentPos: { x: number; y: number }) => {
@@ -191,6 +200,40 @@ const MindMap: React.FC = () => {
     setIsCreatingNode(false);
   };
 
+  const handleDeleteConnection = (fromId: string, toId: string) => {
+    setNodes(prevNodes =>
+      prevNodes.map(node => {
+        if (node.id === fromId) {
+          return {
+            ...node,
+            connections: node.connections.filter(connId => connId !== toId)
+          };
+        }
+        if (node.id === toId) {
+          return {
+            ...node,
+            connections: node.connections.filter(connId => connId !== fromId)
+          };
+        }
+        return node;
+      })
+    );
+    setSelectedConnection(null);
+  };
+
+  const handleConnectionClick = (fromId: string, toId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    const rect = (event.target as SVGElement).getBoundingClientRect();
+    setSelectedConnection({
+      from: fromId,
+      to: toId,
+      position: {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      }
+    });
+  };
+
   const renderConnections = () => {
     const connections: React.ReactElement[] = [];
     
@@ -200,18 +243,36 @@ const MindMap: React.FC = () => {
         if (connectedNode) {
           // Evitar duplicar líneas (solo dibujar desde el nodo con ID menor)
           if (node.id < connectionId) {
+            const isSelected = selectedConnection && 
+              ((selectedConnection.from === node.id && selectedConnection.to === connectionId) ||
+               (selectedConnection.from === connectionId && selectedConnection.to === node.id));
+            
             connections.push(
-              <line
-                key={`${node.id}-${connectionId}`}
-                x1={node.position.x + 60}
-                y1={node.position.y + 20}
-                x2={connectedNode.position.x + 60}
-                y2={connectedNode.position.y + 20}
-                stroke="#666"
-                strokeWidth="2"
-                opacity="0.6"
-                strokeDasharray="5,5"
-              />
+              <g key={`${node.id}-${connectionId}`}>
+                {/* Línea invisible más gruesa para facilitar el click */}
+                <line
+                  x1={node.position.x + 120} // Posición del conector (esquina superior derecha)
+                  y1={node.position.y - 6}
+                  x2={connectedNode.position.x + 120}
+                  y2={connectedNode.position.y - 6}
+                  stroke="transparent"
+                  strokeWidth="12"
+                  cursor="pointer"
+                  onClick={(e) => handleConnectionClick(node.id, connectionId, e)}
+                />
+                {/* Línea visible */}
+                <line
+                  x1={node.position.x + 120} // Posición del conector (esquina superior derecha)
+                  y1={node.position.y - 6}
+                  x2={connectedNode.position.x + 120}
+                  y2={connectedNode.position.y - 6}
+                  stroke={isSelected ? "#EF4444" : "#666"}
+                  strokeWidth={isSelected ? "3" : "2"}
+                  opacity={isSelected ? "1" : "0.6"}
+                  strokeDasharray="5,5"
+                  className="connection-line"
+                />
+              </g>
             );
           }
         }
@@ -241,16 +302,28 @@ const MindMap: React.FC = () => {
       }
     };
 
+    const handleGlobalClick = (e: MouseEvent) => {
+      // Cerrar selección de conexión si se hace click fuera
+      if (selectedConnection) {
+        setSelectedConnection(null);
+      }
+    };
+
     if (isConnecting) {
       document.addEventListener('mousemove', handleGlobalMouseMove);
       document.addEventListener('mouseup', handleGlobalMouseUp);
     }
 
+    if (selectedConnection) {
+      document.addEventListener('click', handleGlobalClick);
+    }
+
     return () => {
       document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('click', handleGlobalClick);
     };
-  }, [isConnecting, connectionLine]);
+  }, [isConnecting, connectionLine, selectedConnection]);
 
   return (
     <div className="mind-map">
@@ -308,6 +381,20 @@ const MindMap: React.FC = () => {
               />
             )}
           </svg>
+
+          {/* Botón X para eliminar conexión seleccionada */}
+          {selectedConnection && (
+            <div
+              className="delete-connection-btn"
+              style={{
+                left: `${selectedConnection.position.x}px`,
+                top: `${selectedConnection.position.y}px`,
+              }}
+              onClick={() => handleDeleteConnection(selectedConnection.from, selectedConnection.to)}
+            >
+              ×
+            </div>
+          )}
         </div>
       </div>
 

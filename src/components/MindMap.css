@@ -162,6 +162,40 @@
   transform: scale(1.2);
 }
 
+.delete-connection-btn {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #EF4444;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  transition: all 0.2s ease;
+  transform: translate(-50%, -50%);
+}
+
+.delete-connection-btn:hover {
+  background: #DC2626;
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+}
+
+.connection-line {
+  transition: all 0.2s ease;
+}
+
+.connection-line:hover {
+  stroke-width: 3;
+  opacity: 0.8;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .mind-map-title {
