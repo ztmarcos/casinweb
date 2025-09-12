@@ -264,6 +264,10 @@
   pointer-events: none;
 }
 
+.connection-hitbox {
+  pointer-events: all !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .mind-map-title {

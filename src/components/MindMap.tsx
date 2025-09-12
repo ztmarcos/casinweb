@@ -299,16 +299,6 @@ const MindMap: React.FC = () => {
             
             connections.push(
               <g key={`${node.id}-${connectionId}`} className="connection-group">
-                {/* Línea invisible más gruesa para facilitar el click */}
-                <path
-                  d={pathData}
-                  stroke="transparent"
-                  strokeWidth="25"
-                  fill="none"
-                  cursor="pointer"
-                  onClick={(e) => handleConnectionClick(node.id, connectionId, e)}
-                  className="connection-hitbox"
-                />
                 {/* Línea visible curva */}
                 <path
                   d={pathData}
@@ -326,6 +316,23 @@ const MindMap: React.FC = () => {
                   fill="none"
                   className="connection-hover"
                   style={{ opacity: 0 }}
+                />
+                {/* Línea invisible más gruesa para facilitar el click - AL FINAL */}
+                <path
+                  d={pathData}
+                  stroke="transparent"
+                  strokeWidth="30"
+                  fill="none"
+                  cursor="pointer"
+                  onClick={(e) => {
+                    console.log('Click detectado en path!', node.id, connectionId);
+                    handleConnectionClick(node.id, connectionId, e);
+                  }}
+                  onMouseDown={(e) => {
+                    console.log('MouseDown detectado!', node.id, connectionId);
+                    e.stopPropagation();
+                  }}
+                  className="connection-hitbox"
                 />
               </g>
             );
@@ -425,7 +432,14 @@ const MindMap: React.FC = () => {
           ))}
           
           {/* Líneas conectoras dinámicas */}
-          <svg className="connections" width="100%" height="100%">
+          <svg 
+            className="connections" 
+            width="100%" 
+            height="100%"
+            onClick={(e) => {
+              console.log('Click en SVG detectado!', e.target);
+            }}
+          >
             {renderConnections()}
             
             {/* Línea de conexión temporal mientras se arrastra */}
