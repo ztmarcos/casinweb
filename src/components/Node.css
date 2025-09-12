@@ -45,28 +45,3 @@
   pointer-events: none;
 }
 
-.node-connector {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 12px;
-  height: 12px;
-  background: #3B82F6;
-  border: 2px solid white;
-  border-radius: 50%;
-  cursor: crosshair;
-  transition: all 0.2s ease;
-  z-index: 20;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.node-connector:hover {
-  background: #1D4ED8;
-  transform: scale(1.2);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
-}
-
-.node-connector:active {
-  background: #1E40AF;
-  transform: scale(1.1);
-}
