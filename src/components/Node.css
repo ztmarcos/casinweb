@@ -45,19 +45,28 @@
   pointer-events: none;
 }
 
-.node-connection-hint {
+.node-connector {
   position: absolute;
-  bottom: -25px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  white-space: nowrap;
-  opacity: 0;
+  top: -6px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  background: #3B82F6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: crosshair;
   transition: all 0.2s ease;
-  pointer-events: none;
-  z-index: 10;
+  z-index: 20;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.node-connector:hover {
+  background: #1D4ED8;
+  transform: scale(1.2);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.node-connector:active {
+  background: #1E40AF;
+  transform: scale(1.1);
 }

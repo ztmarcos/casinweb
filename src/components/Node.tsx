@@ -40,19 +40,7 @@ const Node: React.FC<NodeProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    // Si es click derecho, iniciar conexión
-    if (e.button === 2) {
-      setIsConnecting(true);
-      const rect = nodeRef.current?.getBoundingClientRect();
-      if (rect) {
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        onConnectionStart(id, { x: centerX, y: centerY });
-      }
-      return;
-    }
-
-    // Click izquierdo para drag
+    // Click izquierdo para drag del nodo
     if (e.button === 0) {
       setDragOffset({
         x: e.clientX - position.x,
@@ -62,6 +50,22 @@ const Node: React.FC<NodeProps> = ({
       setHasMoved(false);
       setIsDragging(true);
       onDragStart(id, position);
+    }
+  };
+
+  const handleConnectorMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation(); // Evitar que se active el drag del nodo
+    
+    // Click izquierdo en conector para iniciar conexión
+    if (e.button === 0) {
+      setIsConnecting(true);
+      const rect = nodeRef.current?.getBoundingClientRect();
+      if (rect) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        onConnectionStart(id, { x: centerX, y: centerY });
+      }
     }
   };
 
@@ -143,12 +147,15 @@ const Node: React.FC<NodeProps> = ({
       }}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
-      onContextMenu={handleContextMenu}
     >
       <span className="node-title">{title}</span>
-      <div className="node-connection-hint">
-        Click derecho + arrastrar para conectar
-      </div>
+      
+      {/* Conector visual para crear conexiones */}
+      <div 
+        className="node-connector"
+        onMouseDown={handleConnectorMouseDown}
+        title="Arrastra para conectar con otro nodo"
+      />
     </div>
   );
 };

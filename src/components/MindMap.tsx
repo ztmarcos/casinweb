@@ -266,7 +266,7 @@ const MindMap: React.FC = () => {
 
         {isConnecting && (
           <div className="connection-instructions">
-            Arrastra desde un nodo (click derecho) hacia otro para conectarlos
+            Arrastra desde el conector azul hacia otro nodo para conectarlos
           </div>
         )}
         
