@@ -1,0 +1,63 @@
+.node {
+  position: absolute;
+  padding: 12px 20px;
+  border-radius: 20px;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: grab;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid transparent;
+  min-width: 120px;
+  text-align: center;
+  user-select: none;
+  z-index: 1;
+}
+
+.node:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.node:hover .node-connection-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.node.dragging {
+  cursor: grabbing;
+  transform: scale(1.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transition: none;
+}
+
+.node.being-dragged {
+  z-index: 999;
+}
+
+.node-title {
+  display: block;
+  font-size: 13px;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.node-connection-hint {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 10;
+}
