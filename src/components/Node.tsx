@@ -39,6 +39,18 @@ const Node: React.FC<NodeProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     
+    // Alt + Click para iniciar conexión
+    if (e.altKey && e.button === 0) {
+      setIsConnecting(true);
+      const rect = nodeRef.current?.getBoundingClientRect();
+      if (rect) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        onConnectionStart(id, { x: centerX, y: centerY });
+      }
+      return;
+    }
+    
     // Click izquierdo para drag del nodo
     if (e.button === 0) {
       setDragOffset({
@@ -52,21 +64,6 @@ const Node: React.FC<NodeProps> = ({
     }
   };
 
-  const handleConnectorMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation(); // Evitar que se active el drag del nodo
-    
-    // Click izquierdo en conector para iniciar conexión
-    if (e.button === 0) {
-      setIsConnecting(true);
-      const rect = nodeRef.current?.getBoundingClientRect();
-      if (rect) {
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        onConnectionStart(id, { x: centerX, y: centerY });
-      }
-    }
-  };
 
   // Manejar eventos globales para drag
   React.useEffect(() => {
@@ -78,7 +75,7 @@ const Node: React.FC<NodeProps> = ({
           Math.pow(e.clientY - startPosition.y, 2)
         );
         
-        if (distance > 5) { // Umbral de 5 píxeles
+        if (distance > 8) { // Umbral de 8 píxeles para ser más preciso
           setHasMoved(true);
         }
         
@@ -123,9 +120,14 @@ const Node: React.FC<NodeProps> = ({
   }, [isDragging, isConnecting, dragOffset, position, id, onPositionChange, onDragEnd, onConnectionEnd, startPosition]);
 
   const handleClick = (e: React.MouseEvent) => {
-    // Solo trigger onClick si no estaba arrastrando y no hubo movimiento
-    if (!isDragging && !isConnecting && !hasMoved && e.button === 0) {
-      onClick(id);
+    // Solo trigger onClick si no estaba arrastrando, no conectando y no hubo movimiento
+    if (!isDragging && !isConnecting && !hasMoved && e.button === 0 && !e.altKey) {
+      // Pequeño delay para asegurar que no es parte de una secuencia de drag
+      setTimeout(() => {
+        if (!hasMoved && !isDragging && !isConnecting) {
+          onClick(id);
+        }
+      }, 50);
     }
   };
 
@@ -146,12 +148,6 @@ const Node: React.FC<NodeProps> = ({
     >
       <span className="node-title">{title}</span>
       
-      {/* Conector visual para crear conexiones */}
-      <div 
-        className="node-connector"
-        onMouseDown={handleConnectorMouseDown}
-        title="Arrastra para conectar con otro nodo"
-      />
     </div>
   );
 };

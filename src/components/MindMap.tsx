@@ -90,12 +90,12 @@ const MindMap: React.FC = () => {
   const handleConnectionStart = (nodeId: string) => {
     setIsConnecting(true);
     setConnectingFrom(nodeId);
-    // Usar la posición del conector en lugar del centro del nodo
+    // Usar el centro del nodo como punto de inicio temporal
     const node = nodes.find(n => n.id === nodeId);
     if (node) {
       setConnectionLine({
-        from: { x: node.position.x + 114, y: node.position.y },
-        to: { x: node.position.x + 114, y: node.position.y }
+        from: { x: node.position.x + 60, y: node.position.y + 20 },
+        to: { x: node.position.x + 60, y: node.position.y + 20 }
       });
     }
   };
@@ -223,14 +223,15 @@ const MindMap: React.FC = () => {
 
   const handleConnectionClick = (fromId: string, toId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    console.log('Click en línea detectado!', fromId, toId); // Debug temporal
     
     // Calcular el punto medio de la línea para posicionar el botón X
     const fromNode = nodes.find(n => n.id === fromId);
     const toNode = nodes.find(n => n.id === toId);
     
     if (fromNode && toNode) {
-      const midX = (fromNode.position.x + toNode.position.x) / 2 + 114;
-      const midY = (fromNode.position.y + toNode.position.y) / 2;
+      const midX = (fromNode.position.x + toNode.position.x) / 2 + 60;
+      const midY = (fromNode.position.y + toNode.position.y) / 2 + 20;
       
       setSelectedConnection({
         from: fromId,
@@ -241,6 +242,35 @@ const MindMap: React.FC = () => {
         }
       });
     }
+  };
+
+  // Función para calcular punto de conexión en el borde del nodo
+  const getConnectionPoint = (fromNode: NodeData, toNode: NodeData) => {
+    const fromCenter = { x: fromNode.position.x + 60, y: fromNode.position.y + 20 };
+    const toCenter = { x: toNode.position.x + 60, y: toNode.position.y + 20 };
+    
+    // Calcular ángulo entre nodos
+    const dx = toCenter.x - fromCenter.x;
+    const dy = toCenter.y - fromCenter.y;
+    const angle = Math.atan2(dy, dx);
+    
+    // Dimensiones aproximadas del nodo
+    const nodeWidth = 120;
+    const nodeHeight = 40;
+    
+    // Calcular punto en el borde del nodo origen
+    const fromPoint = {
+      x: fromCenter.x + Math.cos(angle) * (nodeWidth / 2),
+      y: fromCenter.y + Math.sin(angle) * (nodeHeight / 2)
+    };
+    
+    // Calcular punto en el borde del nodo destino
+    const toPoint = {
+      x: toCenter.x - Math.cos(angle) * (nodeWidth / 2),
+      y: toCenter.y - Math.sin(angle) * (nodeHeight / 2)
+    };
+    
+    return { from: fromPoint, to: toPoint };
   };
 
   const renderConnections = () => {
@@ -256,30 +286,53 @@ const MindMap: React.FC = () => {
               ((selectedConnection.from === node.id && selectedConnection.to === connectionId) ||
                (selectedConnection.from === connectionId && selectedConnection.to === node.id));
             
+            const connectionPoints = getConnectionPoint(node, connectedNode);
+            
+            // Crear curva Bézier para una conexión más suave
+            const midX = (connectionPoints.from.x + connectionPoints.to.x) / 2;
+            const midY = (connectionPoints.from.y + connectionPoints.to.y) / 2;
+            const controlOffset = 50;
+            
+            const pathData = `M ${connectionPoints.from.x} ${connectionPoints.from.y} 
+                             Q ${midX} ${midY - controlOffset} 
+                             ${connectionPoints.to.x} ${connectionPoints.to.y}`;
+            
             connections.push(
-              <g key={`${node.id}-${connectionId}`}>
-                {/* Línea invisible más gruesa para facilitar el click */}
-                <line
-                  x1={node.position.x + 114} // Posición exacta del centro del conector
-                  y1={node.position.y}
-                  x2={connectedNode.position.x + 114}
-                  y2={connectedNode.position.y}
-                  stroke="transparent"
-                  strokeWidth="12"
-                  cursor="pointer"
-                  onClick={(e) => handleConnectionClick(node.id, connectionId, e)}
-                />
-                {/* Línea visible */}
-                <line
-                  x1={node.position.x + 114} // Posición exacta del centro del conector
-                  y1={node.position.y}
-                  x2={connectedNode.position.x + 114}
-                  y2={connectedNode.position.y}
-                  stroke={isSelected ? "#EF4444" : "#3B82F6"}
-                  strokeWidth={isSelected ? "3" : "2"}
-                  opacity={isSelected ? "1" : "0.8"}
-                  strokeDasharray="5,5"
+              <g key={`${node.id}-${connectionId}`} className="connection-group">
+                {/* Línea visible curva */}
+                <path
+                  d={pathData}
+                  stroke={isSelected ? "#EF4444" : "#64748B"}
+                  strokeWidth={isSelected ? "4" : "2"}
+                  opacity={isSelected ? "1" : "0.7"}
+                  fill="none"
                   className="connection-line"
+                />
+                {/* Línea de hover blanca */}
+                <path
+                  d={pathData}
+                  stroke="white"
+                  strokeWidth="3"
+                  fill="none"
+                  className="connection-hover"
+                  style={{ opacity: 0 }}
+                />
+                {/* Línea invisible más gruesa para facilitar el click - AL FINAL */}
+                <path
+                  d={pathData}
+                  stroke="transparent"
+                  strokeWidth="30"
+                  fill="none"
+                  cursor="pointer"
+                  onClick={(e) => {
+                    console.log('Click detectado en path!', node.id, connectionId);
+                    handleConnectionClick(node.id, connectionId, e);
+                  }}
+                  onMouseDown={(e) => {
+                    console.log('MouseDown detectado!', node.id, connectionId);
+                    e.stopPropagation();
+                  }}
+                  className="connection-hitbox"
                 />
               </g>
             );
@@ -348,9 +401,16 @@ const MindMap: React.FC = () => {
 
         {isConnecting && (
           <div className="connection-instructions">
-            Arrastra desde el conector azul hacia otro nodo para conectarlos
+            Suelta sobre otro nodo para crear la conexión
           </div>
         )}
+        
+        <div className="usage-instructions">
+          <div className="instruction-item">🖱️ <strong>Arrastrar:</strong> Mover nodo</div>
+          <div className="instruction-item">⌥ + Click: <strong>Conectar nodos</strong></div>
+          <div className="instruction-item">📝 <strong>Click:</strong> Editar nodo</div>
+          <div className="instruction-item">🗑️ <strong>Click en línea:</strong> Eliminar conexión</div>
+        </div>
         
         <div className="nodes-container">
           {nodes.map(node => (
@@ -372,7 +432,14 @@ const MindMap: React.FC = () => {
           ))}
           
           {/* Líneas conectoras dinámicas */}
-          <svg className="connections" width="100%" height="100%">
+          <svg 
+            className="connections" 
+            width="100%" 
+            height="100%"
+            onClick={(e) => {
+              console.log('Click en SVG detectado!', e.target);
+            }}
+          >
             {renderConnections()}
             
             {/* Línea de conexión temporal mientras se arrastra */}

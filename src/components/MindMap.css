@@ -173,6 +173,37 @@
   backdrop-filter: blur(4px);
 }
 
+.usage-instructions {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 250px;
+}
+
+.instruction-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #374151;
+  gap: 8px;
+}
+
+.instruction-item:last-child {
+  margin-bottom: 0;
+}
+
+.instruction-item strong {
+  color: #111827;
+}
+
 .node-wrapper {
   position: relative;
 }
@@ -200,29 +231,29 @@
 
 .delete-connection-btn {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   background: #EF4444;
   color: white;
-  border: 2px solid white;
+  border: 3px solid white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
   transition: all 0.2s ease;
   transform: translate(-50%, -50%);
-  animation: deleteButtonAppear 0.3s ease-out;
+  animation: deleteButtonAppear 0.2s ease-out;
 }
 
 .delete-connection-btn:hover {
   background: #DC2626;
-  transform: translate(-50%, -50%) scale(1.2);
-  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
+  transform: translate(-50%, -50%) scale(1.3);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.8);
 }
 
 @keyframes deleteButtonAppear {
@@ -236,13 +267,41 @@
   }
 }
 
-.connection-line {
+.connection-group {
   transition: all 0.2s ease;
 }
 
-.connection-line:hover {
+.connection-group:hover .connection-line {
+  stroke: white !important;
   stroke-width: 3;
-  opacity: 0.8;
+  opacity: 1;
+}
+
+.connection-group:hover .connection-hover {
+  opacity: 1 !important;
+}
+
+.connection-hitbox {
+  transition: all 0.2s ease;
+}
+
+.connection-hitbox:hover {
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 25;
+}
+
+.connection-line {
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.connection-hover {
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.connection-hitbox {
+  pointer-events: all !important;
 }
 
 /* Responsive adjustments */
