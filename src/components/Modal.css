@@ -240,3 +240,86 @@
     background-color: #555;
   }
 }
+
+/* Estilos para modal público */
+.public-modal {
+  max-width: 600px;
+  max-height: 85vh;
+  background: #1e293b;
+}
+
+.public-modal .modal-header {
+  background: linear-gradient(135deg, var(--header-color, #8B5CF6) 0%, var(--header-color-dark, #7C3AED) 100%);
+  color: white;
+  border-bottom: none;
+}
+
+.public-modal .modal-title {
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.public-modal .modal-close {
+  color: white;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.public-modal .modal-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.modal-image-container {
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-text-content {
+  line-height: 1.6;
+}
+
+.modal-subtitle {
+  color: #f8fafc;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.modal-paragraph {
+  margin: 12px 0;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.modal-list-item {
+  margin: 8px 0;
+  padding-left: 10px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .public-modal {
+    max-width: 95%;
+    max-height: 90vh;
+  }
+  
+  .modal-image {
+    max-height: 200px;
+  }
+}

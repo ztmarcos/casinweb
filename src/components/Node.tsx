@@ -11,7 +11,7 @@ interface NodeProps {
   onDragStart: (nodeId: string, startPos: { x: number; y: number }) => void;
   onDragEnd: (nodeId: string, endPos: { x: number; y: number }) => void;
   onConnectionStart: (nodeId: string, startPos: { x: number; y: number }) => void;
-  onConnectionDrag: (currentPos: { x: number; y: number }) => void;
+  onConnectionDrag?: (currentPos: { x: number; y: number }) => void;
   onConnectionEnd: (nodeId: string) => void;
   isBeingDragged?: boolean;
 }
@@ -26,7 +26,6 @@ const Node: React.FC<NodeProps> = ({
   onDragStart,
   onDragEnd,
   onConnectionStart,
-  onConnectionDrag,
   onConnectionEnd,
   isBeingDragged = false
 }) => {
@@ -130,9 +129,6 @@ const Node: React.FC<NodeProps> = ({
     }
   };
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevenir menú contextual del navegador
-  };
 
   return (
     <div

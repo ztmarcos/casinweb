@@ -79,15 +79,15 @@ const MindMap: React.FC = () => {
     );
   };
 
-  const handleDragStart = (nodeId: string, startPos: { x: number; y: number }) => {
+  const handleDragStart = (nodeId: string) => {
     setDraggedNode(nodeId);
   };
 
-  const handleDragEnd = (nodeId: string, endPos: { x: number; y: number }) => {
+  const handleDragEnd = () => {
     setDraggedNode(null);
   };
 
-  const handleConnectionStart = (nodeId: string, startPos: { x: number; y: number }) => {
+  const handleConnectionStart = (nodeId: string) => {
     setIsConnecting(true);
     setConnectingFrom(nodeId);
     // Usar la posición del conector en lugar del centro del nodo
@@ -302,7 +302,7 @@ const MindMap: React.FC = () => {
       }
     };
 
-    const handleGlobalMouseUp = (e: MouseEvent) => {
+    const handleGlobalMouseUp = () => {
       if (isConnecting) {
         // Si no se soltó sobre un nodo, cancelar conexión
         setIsConnecting(false);
@@ -311,7 +311,7 @@ const MindMap: React.FC = () => {
       }
     };
 
-    const handleGlobalClick = (e: MouseEvent) => {
+    const handleGlobalClick = () => {
       // Cerrar selección de conexión si se hace click fuera
       if (selectedConnection) {
         setSelectedConnection(null);

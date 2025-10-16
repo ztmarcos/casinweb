@@ -1,8 +1,8 @@
-import MindMap from './components/MindMap'
+import MindMapPublic from './components/MindMapPublic'
 import './App.css'
 
 function App() {
-  return <MindMap />
+  return <MindMapPublic />
 }
 
 export default App
