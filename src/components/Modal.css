@@ -19,9 +19,11 @@
   max-width: 500px;
   width: 90%;
   max-height: 80vh;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   animation: modalAppear 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modalAppear {
@@ -42,6 +44,7 @@
   padding: 20px 24px;
   border-bottom: 1px solid #eee;
   background: #f8f9fa;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -75,6 +78,9 @@
   padding: 24px;
   color: #555;
   line-height: 1.6;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-body p {
@@ -246,12 +252,15 @@
   max-width: 600px;
   max-height: 85vh;
   background: #1e293b;
+  display: flex;
+  flex-direction: column;
 }
 
 .public-modal .modal-header {
   background: linear-gradient(135deg, var(--header-color, #8B5CF6) 0%, var(--header-color-dark, #7C3AED) 100%);
   color: white;
   border-bottom: none;
+  flex-shrink: 0;
 }
 
 .public-modal .modal-title {
@@ -288,6 +297,8 @@
 
 .modal-text-content {
   line-height: 1.6;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-subtitle {
@@ -314,6 +325,11 @@
 }
 
 @media (max-width: 768px) {
+  .modal-content {
+    max-width: 95%;
+    max-height: 90vh;
+  }
+  
   .public-modal {
     max-width: 95%;
     max-height: 90vh;
@@ -321,5 +337,16 @@
   
   .modal-image {
     max-height: 200px;
+  }
+  
+  .modal-body {
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  .modal-text-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 }
