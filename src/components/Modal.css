@@ -279,6 +279,13 @@
   background: rgba(255,255,255,0.3);
 }
 
+.public-modal .modal-body {
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
 .modal-image-container {
   width: 100%;
   margin-bottom: 20px;
@@ -299,6 +306,7 @@
   line-height: 1.6;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  max-height: 60vh;
 }
 
 .modal-subtitle {

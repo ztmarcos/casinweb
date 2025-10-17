@@ -2,7 +2,8 @@
   width: 100vw;
   min-height: 100vh;
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -306,6 +307,22 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .mind-map {
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mind-map-container {
+    min-height: 100vh;
+    overflow: visible;
+  }
+  
+  .nodes-container {
+    padding: 10px;
+    overflow: visible;
+  }
+  
   .mind-map-title {
     font-size: 1.5rem;
     top: 20px;
@@ -324,6 +341,22 @@
 }
 
 @media (max-width: 480px) {
+  .mind-map {
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mind-map-container {
+    min-height: 100vh;
+    overflow: visible;
+  }
+  
+  .nodes-container {
+    padding: 5px;
+    overflow: visible;
+  }
+  
   .mind-map-title {
     font-size: 1.2rem;
     top: 15px;
