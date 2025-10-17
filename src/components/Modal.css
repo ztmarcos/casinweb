@@ -3,13 +3,15 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  min-height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  overflow-y: auto;
 }
 
 .modal-content {
@@ -18,12 +20,14 @@
   padding: 0;
   max-width: 500px;
   width: 90%;
-  max-height: 80vh;
+  max-height: 90vh;
+  min-height: 50vh;
   overflow: visible;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   animation: modalAppear 0.3s ease-out;
   display: flex;
   flex-direction: column;
+  margin: 20px;
 }
 
 @keyframes modalAppear {
@@ -250,10 +254,12 @@
 /* Estilos para modal público */
 .public-modal {
   max-width: 600px;
-  max-height: 85vh;
+  max-height: 90vh;
+  min-height: 60vh;
   background: #1e293b;
   display: flex;
   flex-direction: column;
+  margin: 20px;
 }
 
 .public-modal .modal-header {
@@ -333,14 +339,23 @@
 }
 
 @media (max-width: 768px) {
+  .modal-overlay {
+    align-items: flex-start;
+    padding-top: 10px;
+  }
+  
   .modal-content {
     max-width: 95%;
-    max-height: 90vh;
+    max-height: 95vh;
+    min-height: 80vh;
+    margin: 10px;
   }
   
   .public-modal {
     max-width: 95%;
-    max-height: 90vh;
+    max-height: 95vh;
+    min-height: 80vh;
+    margin: 10px;
   }
   
   .modal-image {
@@ -356,5 +371,6 @@
   .modal-text-content {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    max-height: 50vh;
   }
 }
