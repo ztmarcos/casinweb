@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claves de Firebase (migración, no subir)
+*-key.json
+scripts/*-key.json

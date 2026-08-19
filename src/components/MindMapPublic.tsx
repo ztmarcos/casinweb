@@ -1,13 +1,49 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import ModalPublic from './ModalPublic';
 import './MindMap.css';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
+import { logPageVisit, logNodeClick } from '../utils/analytics';
 import type { NodeData } from '../types/NodeData';
+import type { ClientConfig } from '../config/clients';
 
-const MINDMAP_COLLECTION = 'mindmapNodes';
+/** Nodo raíz solo en CASIN; encima de Blog. Si ya existe en Firestore, no se duplica. */
+const CASIN_TECNOLOGIA_NODE: NodeData = {
+  id: 'tecnologia-main',
+  title: 'TECNOLOGÍA',
+  color: '#0891b2',
+  position: { x: 0, y: 0 },
+  connections: [],
+  content: [
+    'Trabajamos en soluciones prácticas de Inteligencia Artificial para negocios y oficinas.',
+    '',
+    'Estamos ayudando a empresas y despachos a ahorrar tiempo en tareas administrativas como:',
+    '',
+    '• organización inteligente de archivos y documentos',
+    '• captura y digitalización de información desde documentos',
+    '• manejo y orden de bases de datos',
+    '• población automática de documentos y formatos',
+    '• automatización de reportes y tareas repetitivas',
+    '• control y seguimiento de clientes, pagos y pólizas',
+    '• búsqueda rápida de información en documentos y sistemas',
+    '• elaboración de resúmenes y reportes ejecutivos',
+    '',
+    'La idea no es reemplazar personas, sino reducir trabajo repetitivo, disminuir errores y hacer más ágil la operación diaria.',
+    '',
+    'Con gusto te enviamos un PDF corto con ejemplos de aplicaciones reales que podemos implementar de manera personalizada.',
+    '',
+    'Si te interesa, con gusto podemos mostrarte opciones útiles para tu tipo de negocio en una llamada breve.',
+    '',
+    'En CASIN Seguros, estas soluciones complementan la asesoría profesional y no sustituyen el criterio del actuario frente a pólizas, coberturas ni condiciones contractuales.',
+  ].join('\n'),
+  image: '/casin-tecnologia.png',
+};
 
-const MindMapPublic: React.FC = () => {
+interface MindMapPublicProps {
+  config: ClientConfig;
+}
+
+const MindMapPublic: React.FC<MindMapPublicProps> = ({ config }) => {
   const [allNodes, setAllNodes] = useState<NodeData[]>([]);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
@@ -16,7 +52,12 @@ const MindMapPublic: React.FC = () => {
     height: typeof window !== 'undefined' ? window.innerHeight : 768,
   });
 
-  const nodesCollectionRef = useMemo(() => collection(db, MINDMAP_COLLECTION), []);
+  const nodesCollectionRef = useMemo(() => collection(db, config.firestoreCollection), [config.firestoreCollection]);
+
+  // Log page visit on mount
+  useEffect(() => {
+    logPageVisit(config.id);
+  }, [config.id]);
 
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -71,10 +112,16 @@ const MindMapPublic: React.FC = () => {
     return () => unsubscribe();
   }, [nodesCollectionRef]);
 
+  const graphNodes = useMemo(() => {
+    if (config.id !== 'casinbbdd') return allNodes;
+    if (allNodes.some(n => n.id === 'tecnologia-main')) return allNodes;
+    return [...allNodes, CASIN_TECNOLOGIA_NODE];
+  }, [allNodes, config.id]);
+
   // Filtrar nodos visibles (solo nodos raíz y sus hijos expandidos)
   const visibleNodes = useMemo(() => {
     // Filtrar SOLO nodos principales (sin parentId)
-    const roots = allNodes.filter(node => !node.parentId);
+    const roots = graphNodes.filter(node => !node.parentId);
     
     // Verificar si algún nodo raíz está expandido
     const expandedRoots = roots.filter(root => expandedNodes.has(root.id));
@@ -88,7 +135,7 @@ const MindMapPublic: React.FC = () => {
       // SOLO agregar hijos si el nodo está expandido
       if (!expandedNodes.has(parentId)) return;
       
-      const children = allNodes.filter(node => node.parentId === parentId);
+      const children = graphNodes.filter(node => node.parentId === parentId);
       children.forEach(child => {
         visible.push(child);
         // Recursivamente agregar descendientes si este hijo también está expandido
@@ -123,7 +170,7 @@ const MindMapPublic: React.FC = () => {
       
       // Si solo hay nodos raíz (sin expandir), mostrarlos a la izquierda
       if (rootNodes.length === visible.length) {
-        const order = ['vida-main', 'gm-main', 'autos-main', 'hogar-main', 'negocio-main', 'empresarial-main', 'beneficios-main', 'blog-main'];
+        const order = ['vida-main', 'gm-main', 'autos-main', 'hogar-main', 'negocio-main', 'empresarial-main', 'beneficios-main', 'tecnologia-main', 'blog-main'];
         const sortedRoots = rootNodes.sort((a, b) => {
           const indexA = order.indexOf(a.id);
           const indexB = order.indexOf(b.id);
@@ -193,7 +240,7 @@ const MindMapPublic: React.FC = () => {
         const startY = 50;
         
         // Ordenar nodos según el orden deseado
-        const order = ['vida-main', 'gm-main', 'autos-main', 'hogar-main', 'negocio-main', 'empresarial-main', 'beneficios-main', 'blog-main'];
+        const order = ['vida-main', 'gm-main', 'autos-main', 'hogar-main', 'negocio-main', 'empresarial-main', 'beneficios-main', 'tecnologia-main', 'blog-main'];
         const sortedRoots = rootNodes.sort((a, b) => {
           const indexA = order.indexOf(a.id);
           const indexB = order.indexOf(b.id);
@@ -255,7 +302,7 @@ const MindMapPublic: React.FC = () => {
         // Posicionar nietos (sub-hijos) más a la derecha, debajo del hijo
         const grandChildren = visible.filter(n => n.parentId === child.id);
         if (grandChildren.length > 0) {
-          const grandChildSpacing = 110;
+          const grandChildSpacing = 140;
           const grandChildStartY = y + 120; // Debajo del hijo
           
           grandChildren.forEach((grandChild, gIndex) => {
@@ -272,7 +319,7 @@ const MindMapPublic: React.FC = () => {
       
       return positioned;
     }
-  }, [allNodes, expandedNodes, viewport]);
+  }, [graphNodes, expandedNodes, viewport]);
 
   const canvasBounds = useMemo(() => {
     const isMobile = viewport.width <= 768;
@@ -298,8 +345,11 @@ const MindMapPublic: React.FC = () => {
   }, [visibleNodes, viewport]);
 
   const handleNodeClick = (nodeId: string) => {
-    const node = allNodes.find(n => n.id === nodeId);
+    const node = graphNodes.find(n => n.id === nodeId);
     if (!node) return;
+
+    // Log node click
+    logNodeClick(config.id, nodeId, node.title);
 
     // Manejo especial para el blog - redirigir a URL externa
     if (nodeId === 'blog-main') {
@@ -308,9 +358,9 @@ const MindMapPublic: React.FC = () => {
     }
 
     // Si el nodo tiene hijos, expandir/colapsar
-    const hasChildren = allNodes.some(n => n.parentId === nodeId);
+    const hasChildNodes = graphNodes.some(n => n.parentId === nodeId);
     
-    if (hasChildren) {
+    if (hasChildNodes) {
       setExpandedNodes(prev => {
         const newSet = new Set(prev);
         if (newSet.has(nodeId)) {
@@ -318,7 +368,7 @@ const MindMapPublic: React.FC = () => {
           // También colapsar todos los descendientes
           const collapseDescendants = (id: string) => {
             newSet.delete(id);
-            allNodes.filter(n => n.parentId === id).forEach(child => {
+            graphNodes.filter(n => n.parentId === id).forEach(child => {
               collapseDescendants(child.id);
             });
           };
@@ -385,7 +435,7 @@ const MindMapPublic: React.FC = () => {
   };
 
   const hasChildren = (nodeId: string) => {
-    return allNodes.some(n => n.parentId === nodeId);
+    return graphNodes.some(n => n.parentId === nodeId);
   };
 
   const isExpanded = (nodeId: string) => {
@@ -396,8 +446,25 @@ const MindMapPublic: React.FC = () => {
     <div className="mind-map">
       <div className="mind-map-container">
         <div className="brand-header">
-          <h1 className="brand-title">CASIN Seguros</h1>
-          <img src="/logo.png" alt="CASIN Logo" className="brand-logo" />
+          <div className="header-left">
+            <img src={`${config.logo}?v=1`} alt={`${config.name} Logo`} className="brand-logo" />
+            <div className="header-title-group">
+            <h1 className="brand-title">{config.name}</h1>
+              {config.id === 'terapia-psicologica' && (
+                <p className="brand-tagline">Terapia Integral</p>
+              )}
+            </div>
+          </div>
+          <div className="header-right">
+            <p className="banner-text">
+              <>
+              Solicita tu asesoría gratuita{' '}
+              <a href={`https://wa.me/${config.phone}`} target="_blank" rel="noopener noreferrer" className="whatsapp-link">
+                WhatsApp {config.phone.slice(-10)}
+              </a>
+            </>
+            </p>
+          </div>
         </div>
 
         {expandedNodes.size > 0 && (
@@ -503,6 +570,24 @@ const MindMapPublic: React.FC = () => {
           >
             {renderConnections()}
           </svg>
+        </div>
+
+        <div className="about-section">
+          <h2 className="about-title">Quiénes somos</h2>
+          <div className="about-content">
+            <p className="about-name">{config.agent}</p>
+            <p className="about-contact">
+              <a href={`mailto:${config.email}`} className="contact-link">
+                📧 {config.email}
+              </a>
+            </p>
+            <p className="about-contact">
+              <a href={`https://wa.me/${config.phone}`} target="_blank" rel="noopener noreferrer" className="contact-link">
+                💬 WhatsApp: {config.phone.slice(-10)}
+              </a>
+            </p>
+            <p className="about-tagline">Estamos a un mensaje de distancia</p>
+          </div>
         </div>
       </div>
 

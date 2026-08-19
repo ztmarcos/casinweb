@@ -196,7 +196,7 @@ const allNodes = [
     title: 'El Coaseguro',
     color: '#14B8A6',
     position: { x: 0, y: 0 },
-    content: 'El coaseguro es el porcentaje de los gastos médicos cubiertos que el asegurado paga después del deducible, compartiendo costos con la aseguradora.\n\nInfluye en el costo del seguro: a mayor coaseguro, menor será la prima.',
+    content: 'El coaseguro es el porcentaje del gasto cubierto por la póliza que el asegurado debe pagar después de haber cubierto el deducible y antes de alcanzar el límite máximo de responsabilidad o tope de coaseguro.\n\nEn otras palabras, es una participación económica compartida entre la aseguradora y el asegurado en los gastos médicos cubiertos.\n\nInfluye en el costo del seguro: a mayor coaseguro, menor será la prima.',
     connections: ['gm-deducible'],
     parentId: 'gm-deducible',
   },
@@ -436,7 +436,20 @@ const allNodes = [
     position: { x: 0, y: 0 },
     content: 'Diseñamos, instalamos y administramos programas de beneficios para empleados que incluyen seguros de grupo de vida, gastos médicos mayores, seguros de accidentes, flotillas de automóviles, hogar y otros en descuento por nómina. También asesoramos y diseñamos programas de prestaciones como fondos de ahorro, planes de retiro, valuaciones actuariales y otras prestaciones no asegurables que cumplen con requisitos para deducibilidad de impuestos.',
     connections: ['beneficios-vida-grupo', 'beneficios-gastos-medicos', 'beneficios-accidentes', 'beneficios-flotillas', 'beneficios-prestaciones'],
-    image: '/empresarial.png',
+    image: '/empleados.png',
+    isExpanded: false,
+  },
+
+  // NODO PRINCIPAL TECNOLOGÍA (CASIN — mismo id que en app si se sincroniza con Firestore)
+  {
+    id: 'tecnologia-main',
+    title: 'TECNOLOGÍA',
+    color: '#0891b2',
+    position: { x: 0, y: 0 },
+    content:
+      'Trabajamos en soluciones prácticas de Inteligencia Artificial para negocios y oficinas.\n\nEstamos ayudando a empresas y despachos a ahorrar tiempo en tareas administrativas como:\n\n• organización inteligente de archivos y documentos\n• captura y digitalización de información desde documentos\n• manejo y orden de bases de datos\n• población automática de documentos y formatos\n• automatización de reportes y tareas repetitivas\n• control y seguimiento de clientes, pagos y pólizas\n• búsqueda rápida de información en documentos y sistemas\n• elaboración de resúmenes y reportes ejecutivos\n\nLa idea no es reemplazar personas, sino reducir trabajo repetitivo, disminuir errores y hacer más ágil la operación diaria.\n\nCon gusto te enviamos un PDF corto con ejemplos de aplicaciones reales que podemos implementar de manera personalizada.\n\nSi te interesa, con gusto podemos mostrarte opciones útiles para tu tipo de negocio en una llamada breve.\n\nEn CASIN Seguros, estas soluciones complementan la asesoría profesional y no sustituyen el criterio del actuario frente a pólizas, coberturas ni condiciones contractuales.',
+    connections: [],
+    image: '/casin-tecnologia.png',
     isExpanded: false,
   },
 

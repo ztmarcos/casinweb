@@ -1,7 +1,7 @@
 .mind-map {
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: var(--theme-background, linear-gradient(135deg, #1e293b 0%, #0f172a 100%));
   overflow-x: auto;
   overflow-y: auto;
   position: relative;
@@ -16,33 +16,128 @@
 .brand-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   padding: 20px 30px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--theme-header-bg, rgba(0, 0, 0, 0.2));
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
+  gap: 20px;
+}
+
+/* Header ajustado para terapia - 30% más pequeño */
+[data-client="terapia-psicologica"] .brand-header {
+  align-items: flex-end;
+  padding: 14px 21px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.header-right {
+  display: flex;
+  align-items: flex-end;
+}
+
+.banner-text {
+  color: var(--theme-text, white);
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+  text-align: right;
+}
+
+.whatsapp-link {
+  color: var(--theme-primary, #cf982b);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+[data-theme="light"] .whatsapp-link {
+  color: #16a34a;
+}
+
+.whatsapp-link:hover {
+  color: var(--theme-secondary, #e6a832);
+  text-decoration: underline;
+}
+
+[data-theme="light"] .whatsapp-link:hover {
+  color: #15803d;
 }
 
 .brand-title {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 600;
+  color: var(--theme-text, white);
+  font-size: 1rem;
+  font-weight: 500;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.brand-tagline {
+  color: var(--theme-text, white);
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.85;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.2px;
 }
 
 .brand-logo {
-  height: 40px;
+  height: 80px;
   width: auto;
-  filter: brightness(1.1);
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Logo ajustado para terapia - 30% más pequeño que el anterior */
+[data-client="terapia-psicologica"] .brand-logo {
+  height: 84px;
+  width: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: transform 0.2s ease;
+}
+
+[data-client="terapia-psicologica"] .brand-logo:hover {
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .brand-logo {
+    height: 70px;
+  }
+  
+  [data-client="terapia-psicologica"] .brand-logo {
+    height: 100px;
+  }
 }
 
 .back-button {
   position: fixed;
-  top: 80px;
+  top: 120px;
   left: 20px;
   background: rgba(59, 130, 246, 0.9);
   color: white;
@@ -52,9 +147,10 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  z-index: 50;
+  z-index: 101;
   backdrop-filter: blur(10px);
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .back-button:hover {
@@ -305,6 +401,90 @@
   pointer-events: all !important;
 }
 
+/* About Section */
+.about-section {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  margin-top: 60px;
+  border-top: 2px solid rgba(134, 239, 172, 0.3);
+  text-align: center;
+}
+
+/* Dark theme override for about section */
+[data-theme="dark"] .about-section {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-title {
+  color: #1f2937;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  text-shadow: none;
+}
+
+[data-theme="dark"] .about-title {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.about-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-name {
+  color: #374151;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  text-shadow: none;
+}
+
+[data-theme="dark"] .about-name {
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.about-contact {
+  margin: 12px 0;
+}
+
+.contact-link {
+  color: #16a34a;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .contact-link {
+  color: #86efac;
+}
+
+.contact-link:hover {
+  color: #15803d;
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .contact-link:hover {
+  color: #4ade80;
+}
+
+.about-tagline {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 20px 0 0 0;
+  font-style: italic;
+}
+
+[data-theme="dark"] .about-tagline {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .mind-map {
@@ -337,6 +517,67 @@
     width: 45px;
     height: 45px;
     font-size: 20px;
+  }
+
+  .brand-header {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .header-left {
+    gap: 10px;
+  }
+
+  .header-right {
+    width: 100%;
+  }
+
+  .banner-text {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .brand-title {
+    font-size: 1.2rem;
+  }
+
+  .brand-logo {
+    height: 32px;
+  }
+  
+  [data-client="terapia-psicologica"] .brand-logo {
+    height: 63px;
+  }
+
+  .back-button {
+    top: 120px;
+    left: 15px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .about-section {
+    padding: 30px 20px;
+    margin-top: 40px;
+  }
+
+  .about-title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .about-name {
+    font-size: 1.1rem;
+  }
+
+  .contact-link {
+    font-size: 0.9rem;
+  }
+
+  .about-tagline {
+    font-size: 0.85rem;
   }
 }
 
@@ -371,5 +612,62 @@
     width: 40px;
     height: 40px;
     font-size: 18px;
+  }
+
+  .brand-header {
+    padding: 12px 15px;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .header-left {
+    gap: 8px;
+  }
+
+  .header-right {
+    width: 100%;
+  }
+
+  .banner-text {
+    font-size: 11px;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+  }
+
+  .brand-logo {
+    height: 28px;
+  }
+  
+  [data-client="terapia-psicologica"] .brand-logo {
+    height: 56px;
+  }
+
+  .back-button {
+    top: 110px;
+    left: 10px;
+  }
+
+  .about-section {
+    padding: 25px 15px;
+    margin-top: 30px;
+  }
+
+  .about-title {
+    font-size: 1.2rem;
+  }
+
+  .about-name {
+    font-size: 1rem;
+  }
+
+  .contact-link {
+    font-size: 0.85rem;
+  }
+
+  .about-tagline {
+    font-size: 0.8rem;
   }
 }

@@ -37,8 +37,14 @@ const ModalPublic: React.FC<ModalPublicProps> = ({
                 src={image} 
                 alt={title}
                 className="modal-image"
+                loading="eager"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none';
+                  console.error('Error loading image:', image);
+                  console.error('Trying to load from:', window.location.origin + image);
+                  // Intentar cargar con timestamp para evitar caché
+                  const img = e.currentTarget;
+                  const newSrc = image + '?v=' + Date.now();
+                  img.src = newSrc;
                 }}
               />
             </div>

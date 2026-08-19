@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // CASIN
+    match /mindmapNodes/{document=**} {
+      allow read, write: if true;
+    }
+    match /analyticsCASIN/{document=**} {
+      allow read, write: if true;
+    }
+    // Terapia
+    match /mindmapNodesTerapia/{document=**} {
+      allow read, write: if true;
+    }
+    match /analyticsTerapia/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

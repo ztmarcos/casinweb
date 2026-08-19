@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // MQWFJ Analytics - allow read/write for all (public access)
+    match /analyticsMQWFJ/{document=**} {
+      allow read, write: if true;
+    }
+    
+    // MQWFJ Comments - allow read/write for all (public access)
+    match /commentsMQWFJ/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
